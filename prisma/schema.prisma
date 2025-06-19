@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Role{
+  id        Int   @id @default(autoincrement())
+  name      String
+  users    User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id        Int   @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  password  String 
+  no_telp   String
+  user_congregation user_congregation[]
+
+  role      Role  @relation(fields: [roleId], references: [id])
+  roleId    Int 
+}
+
+model Region {
+  id        Int   @id @default(autoincrement())
+  name      String
+  congregation Congregation[]
+
+  createdAt DateTime @default(now())
+}
+
+model Congregation {
+  id        Int   @id @default(autoincrement())
+  name      String?
+  region_id Int
+  user_congregation user_congregation[]
+
+  region Region  @relation(fields: [region_id], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model user_congregation {
+  id        Int   @id @default(autoincrement())
+  user_id Int 
+  congregation_id Int
+
+  user User @relation(fields: [user_id], references: [id])
+  congregation Congregation @relation(fields: [congregation_id], references: [id])
+  createdAt DateTime @default(now())
+}
+
+
+model lg_congregation {
+  id        Int   @id @default(autoincrement())
+  name      String?
+  region_id Int
+  input_at String
+  action String
+
+  createdAt DateTime @default(now())
+}
+
+model lg_region {
+  id        Int   @id @default(autoincrement())
+  name      String
+  action String
+  input_at String
+
+  createdAt DateTime @default(now())
+}

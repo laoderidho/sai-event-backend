@@ -1,0 +1,115 @@
+import { prisma } from '../../utils/prisma'
+import { userId as defaultRoleId } from '../../config/general.config';
+import ILogin from '../../interface/auth/login.interface';
+import { HTTPException } from 'hono/http-exception'
+import {sign} from 'hono/jwt'
+import { secretAccessToken } from '../../config/jwtSecret.config';
+
+class AuthServices{
+    async register(body: any){
+        try {
+            const { name, email, no_telp, password, congregation_id }= body
+
+            const getDataEmail = await prisma.user.findFirst({
+                where: {
+                  OR: [
+                    { email: email },
+                    { no_telp: no_telp }
+                  ]
+                }
+            });
+
+            const getDataCongregation = await prisma.congregation.findFirst({
+                where: {
+                    id: congregation_id
+                }
+            })
+
+            if(!getDataCongregation){
+                throw new HTTPException(404, {message: "Jemaat Tidak ditemukan"})
+            }
+              
+            if(getDataEmail){
+                throw new HTTPException(409, {message: "Email Atau nomor Telepon sudah ada"});
+            }
+
+            const result = await prisma.$transaction(async prisma=>{
+               const user =  await prisma.user.create({
+                        data: {
+                            name: name,
+                            email: email,
+                            no_telp: no_telp,
+                            roleId: defaultRoleId,
+                            password: await Bun.password.hash(password)
+                        }
+                })
+                const userId: number = user.id
+
+                await prisma.user_congregation.create({
+                    data: {
+                        user_id: userId,
+                        congregation_id: congregation_id
+                    }
+                })
+
+                return 'success'
+            })
+            return {
+                status: 'success',
+                result: result
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async login(body: ILogin){
+        try {
+            
+            const {email, password} = body
+
+            const data = await prisma.user.findUnique({
+                where: {
+                    email: email
+                }
+            })
+
+            if(!data){
+                throw new HTTPException(404, {message: "Email dan Password salah"})
+            }
+
+            const comparePassword = await Bun.password.verify(password, data.password)
+
+            if(!comparePassword){
+                throw new HTTPException(404, {message: "password salah"})
+            }
+
+            const payload = {
+                sub: data.id,
+                role: data.roleId,
+                exp: Math.floor(Date.now() / 1000) + 60 * 180
+            }
+
+            
+            if (!secretAccessToken) {
+                throw new Error("JWT secretAccessToken is not defined");
+            }
+            
+            const token = await sign(payload, secretAccessToken)
+            
+           
+            return{
+                status: "success",
+                message: "Berhasil Login",
+                token: token,
+                role: data.roleId,
+                name: data.name
+            }
+
+        } catch (error) {
+            throw error;
+        }
+    }
+}
+
+export default AuthServices
