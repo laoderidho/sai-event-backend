@@ -6,6 +6,8 @@ import {
   generateRandomPhoneNumber
 } from './utils/general';
 
+import { hostLink } from './config';
+
 let tempEmail = ""
 let tempPassword = ""
 let temp_no_telp = ""
@@ -26,7 +28,7 @@ describe("Auth Testing", () => {
     temp_name = name
 
 
-    const res = await fetch('http://localhost:3000/api/auth/register', {
+    const res = await fetch(`${hostLink}auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -49,7 +51,7 @@ describe("Auth Testing", () => {
     const no_telp = temp_no_telp;
     const congregation = 1;
 
-    const res = await fetch('http://localhost:3000/api/auth/register', {
+    const res = await fetch(`${hostLink}auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -77,7 +79,7 @@ describe("Auth Testing", () => {
     const no_telp = generateRandomPhoneNumber();
 
 
-    const res = await fetch('http://localhost:3000/api/auth/register', {
+    const res = await fetch(`${hostLink}auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -102,7 +104,7 @@ describe("Auth Testing", () => {
     const email = tempEmail;
     const password = tempPassword;
 
-    const res = await fetch('http://localhost:3000/api/auth/login', {
+    const res = await fetch(`${hostLink}auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -123,7 +125,7 @@ describe("Auth Testing", () => {
     const email = "testFaild@gmail.com";
     const password = tempPassword;
 
-    const res = await fetch('http://localhost:3000/api/auth/login', {
+    const res = await fetch(`${hostLink}auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -142,7 +144,7 @@ describe("Auth Testing", () => {
     const email = tempEmail;
     const password = "0";
 
-    const res = await fetch('http://localhost:3000/api/auth/login', {
+    const res = await fetch(`${hostLink}auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
