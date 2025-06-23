@@ -15,8 +15,6 @@ export default class RegionController {
     async add(c: Context){
         const body : Iregion = await c.req.json()
 
-        const token = c.req.header('Authorization')
-
         try {
             const service = await this.regionService.Add(body, c)
 
@@ -49,7 +47,7 @@ export default class RegionController {
 
     async update(c: Context){
         try {
-            const id: number = Number(await c.req.param('id'))
+            const id: number = Number(c.req.param('id'))
             const body: Iregion = await c.req.json();
             const data = await this.regionService.update(body, id, c)
 
@@ -61,7 +59,7 @@ export default class RegionController {
 
     async delete(c: Context){
         try {
-            const id: number = Number(await c.req.param('id'))
+            const id: number = Number(c.req.param('id'))
             const data = await this.regionService.delete(id, c)
 
             return c.json(data)

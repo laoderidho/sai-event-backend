@@ -7,7 +7,6 @@ export const HandleError = (error: unknown, c: Context) => {
   if (error instanceof z.ZodError) {
     return c.json(zodError(error), 400);
   }
-
   if (error instanceof HTTPException) {
     return c.json(
       {

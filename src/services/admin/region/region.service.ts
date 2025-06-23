@@ -11,7 +11,7 @@ export default class RegionService {
     async Add(body: Iregion, c: Context){
         try {
             const {name} = body
-            const token = await c.req.header('Authorization')
+            const token = c.req.header('Authorization')
             const dataToken = await verify(token ?? '', secretAccessToken ?? '')
 
             const {email} = dataToken
@@ -87,7 +87,7 @@ export default class RegionService {
         try {
 
             const {name} = body
-            const token = await c.req.header('Authorization')
+            const token = c.req.header('Authorization')
             const dataToken = await verify(token ?? '', secretAccessToken ?? '')
             const {email} = dataToken
             
@@ -137,7 +137,7 @@ export default class RegionService {
 
     async delete(id: number, c: Context){
         try {
-            const token = await c.req.header('Authorization')
+            const token = c.req.header('Authorization')
             const dataToken = await verify(token ?? '', secretAccessToken ?? '')
             const {email} = dataToken
 

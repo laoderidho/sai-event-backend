@@ -74,6 +74,7 @@ model lg_congregation {
   id        Int   @id @default(autoincrement())
   name      String?
   region_id Int
+  conggregation_id Int
   input_at String
   action_id Int
 
