@@ -62,21 +62,33 @@ model user_congregation {
 }
 
 
+model status_log {
+  id Int @id @default(autoincrement())
+  name  String?
+
+  lg_regions lg_region[]
+  lg_congregations lg_congregation[]
+}
+
 model lg_congregation {
   id        Int   @id @default(autoincrement())
   name      String?
   region_id Int
   input_at String
-  action String
+  action_id Int
 
   createdAt DateTime @default(now())
+  status_log status_log @relation(fields: [action_id], references: [id])
 }
 
 model lg_region {
   id        Int   @id @default(autoincrement())
+  region_id Int 
   name      String
-  action String
+  action_id Int
   input_at String
 
   createdAt DateTime @default(now())
+
+  status_log status_log @relation(fields: [action_id], references: [id])
 }

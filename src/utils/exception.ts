@@ -19,7 +19,7 @@ export const HandleError = (error: unknown, c: Context) => {
   }
 
   if (error instanceof Error) {
-    return c.json({ message: error.message }, 400);
+    return c.json({ message: error.message }, 500);
   }
 
   return c.json({ message: "Unknown error occurred" }, 500);

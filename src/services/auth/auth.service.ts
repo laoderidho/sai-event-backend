@@ -89,6 +89,7 @@ class AuthServices{
             const payload = {
                 sub: data.id,
                 role: data.roleId,
+                email: data.email,
                 exp: Math.floor(Date.now() / 1000) + 60 * 180
             }
 
