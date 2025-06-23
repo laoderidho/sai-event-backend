@@ -29,7 +29,7 @@ class authController {
         try {
             const body = await c.req.json()
 
-            const service = await this.authService.login(body)
+            const service = await this.authService.login(body, c)
 
             return c.json({ data: service }, 200);
 

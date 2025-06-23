@@ -4,6 +4,8 @@ import ILogin from '../../interface/auth/login.interface';
 import { HTTPException } from 'hono/http-exception'
 import {sign} from 'hono/jwt'
 import { secretAccessToken } from '../../config/jwtSecret.config';
+import { setCookie } from "hono/cookie";
+import { Context } from 'hono';
 
 class AuthServices{
     async register(body: any){
@@ -63,7 +65,7 @@ class AuthServices{
         }
     }
 
-    async login(body: ILogin){
+    async login(body: ILogin, c: Context){
         try {
             
             const {email, password} = body
@@ -91,12 +93,27 @@ class AuthServices{
             }
 
             
+            const refreshPayload = {
+                sub: data.id,
+                role: data.roleId,
+                exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7
+            };
+
+            
             if (!secretAccessToken) {
                 throw new Error("JWT secretAccessToken is not defined");
             }
             
             const token = await sign(payload, secretAccessToken)
             
+            const refreshToken = await sign(refreshPayload, secretAccessToken)
+
+            
+            setCookie(c, 'refreshToken', refreshToken, {
+                maxAge: 60 * 60 * 24 * 7,
+                httpOnly: true,
+                sameSite: 'None'
+            })
            
             return{
                 status: "success",
