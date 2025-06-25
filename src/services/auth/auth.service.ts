@@ -6,6 +6,7 @@ import {sign} from 'hono/jwt'
 import { secretAccessToken } from '../../config/jwtSecret.config';
 import { setCookie } from "hono/cookie";
 import { Context } from 'hono';
+import { getUserNameType } from '../../utils/general';
 
 class AuthServices{
     async register(body: any){
@@ -68,16 +69,18 @@ class AuthServices{
     async login(body: ILogin, c: Context){
         try {
             
-            const {email, password} = body
+            const {username, password} = body
 
-            const data = await prisma.user.findUnique({
+            let label: string = getUserNameType(username)
+
+            const data = await prisma.user.findFirst({
                 where: {
-                    email: email
+                    [label]: username
                 }
             })
 
             if(!data){
-                throw new HTTPException(404, {message: "Email dan Password salah"})
+                throw new HTTPException(404, {message: "Username dan Password salah"})
             }
 
             const comparePassword = await Bun.password.verify(password, data.password)
