@@ -7,6 +7,7 @@ import { secretAccessToken } from '../../config/jwtSecret.config';
 import { setCookie } from "hono/cookie";
 import { Context } from 'hono';
 import { getUserNameType } from '../../utils/general';
+import { IRegister } from '../../interface/auth/register.interface';
 
 class AuthServices{
     async register(body: any){
@@ -63,6 +64,31 @@ class AuthServices{
             }
         } catch (error) {
             throw error;
+        }
+    }
+
+    async checkEmailOrPhone(Body: IRegister){
+        try {
+            const {email, no_telp} = Body
+
+            const getDataUser = await prisma.user.findFirst({
+                where: {
+                OR: [
+                    { email: email },
+                    { no_telp: no_telp }
+                ]
+                }
+            });
+
+            if(getDataUser){
+                throw new HTTPException(409, {message: "Email Atau nomor Telepon sudah Terdaftar"});
+            }
+
+            return {
+                message: 'success'
+            }   
+        } catch (error) {
+            throw error
         }
     }
 

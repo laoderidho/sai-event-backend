@@ -38,6 +38,17 @@ class authController {
         }
     }
 
+    async checkUnique(c: Context){
+        try {
+            const body: IRegister = await c.req.json()
+            const service = await this.authService.checkEmailOrPhone(body)
+
+            return c.json(service, 200);
+        } catch (error) {
+            return HandleError(error, c)
+        }
+    }
+
 }
 
 export default authController
