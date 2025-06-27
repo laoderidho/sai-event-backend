@@ -2,22 +2,20 @@ import { Context } from "hono";
 import { Next } from "hono";
 import { decode } from "hono/jwt";
 import { prisma } from "../utils/prisma";
+import { getCookie } from "hono/cookie";
 
 const RoleMiddleware = (params: number) =>{
     return async (c: Context, next: Next) => {
         // request token from header
-       const token = c.req.header('Authorization')
+       let token = getCookie(c, 'accessToken')
 
          if(!token){
-              return c.json({
-                status: "error",
-                message: "Token tidak ditemukan"
-              }, 401)
+            token = c.get('newAccessToken')
          }
 
             // cek token
             try {
-                const {payload} = await decode(token)
+                const {payload} = decode(token ?? '')
                
                 if(!payload){
                     return c.json({

@@ -3,7 +3,7 @@ import { userId as defaultRoleId } from '../../config/general.config';
 import ILogin from '../../interface/auth/login.interface';
 import { HTTPException } from 'hono/http-exception'
 import {sign} from 'hono/jwt'
-import { secretAccessToken } from '../../config/jwtSecret.config';
+import { secretAccessToken, secretRefreshToken } from '../../config/jwtSecret.config';
 import { setCookie } from "hono/cookie";
 import { Context } from 'hono';
 import { getUserNameType } from '../../utils/general';
@@ -136,19 +136,23 @@ class AuthServices{
             
             const token = await sign(payload, secretAccessToken)
             
-            const refreshToken = await sign(refreshPayload, secretAccessToken)
+            const refreshToken = await sign(refreshPayload, secretRefreshToken ?? '')
 
+            setCookie(c, 'accessToken', token, {
+                maxAge: 60 * 60 * 3,
+                httpOnly: true,
+                sameSite: 'Strict'
+            })
             
             setCookie(c, 'refreshToken', refreshToken, {
                 maxAge: 60 * 60 * 24 * 7,
                 httpOnly: true,
-                sameSite: 'None'
+                sameSite: 'Strict'    
             })
            
             return{
                 status: "success",
                 message: "Berhasil Login",
-                token: token,
                 role: data.roleId,
                 name: data.name
             }
