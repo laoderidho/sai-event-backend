@@ -84,6 +84,10 @@ class AuthServices{
                 throw new HTTPException(409, {message: "Email Atau nomor Telepon sudah Terdaftar"});
             }
 
+            if(no_telp.length > 15 || no_telp.length < 10){
+                throw new HTTPException(400, {message: "Nomor Telepon tidak valid"})
+            }
+
             return {
                 message: 'success'
             }   
