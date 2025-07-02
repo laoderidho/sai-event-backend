@@ -145,13 +145,13 @@ class AuthServices{
             setCookie(c, 'accessToken', token, {
                 maxAge: 60 * 60 * 3,
                 httpOnly: true,
-                sameSite: 'Strict'
+                sameSite: 'Lax'
             })
             
             setCookie(c, 'refreshToken', refreshToken, {
                 maxAge: 60 * 60 * 24 * 7,
                 httpOnly: true,
-                sameSite: 'Strict'    
+                sameSite: 'Lax'    
             })
            
             return{

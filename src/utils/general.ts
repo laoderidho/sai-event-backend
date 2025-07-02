@@ -50,7 +50,7 @@ export const setAccessToken = async (c: Context, token: string): Promise<Iaccess
     setCookie(c, 'accessToken', getToken, {
         maxAge: 60 * 60 * 3,
         httpOnly: true,
-        sameSite: 'Strict'
+        sameSite: 'Lax'
     })
 
     return {

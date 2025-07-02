@@ -12,8 +12,7 @@ const authMiddleware = async (c: Context, next: Next) => {
       let token = getCookie(c, 'accessToken')
       const refreshToken = getCookie(c, 'refreshToken')
       let data
-
-      
+        
       try {
         data = await verify(token ?? '', secretAccessToken ?? '')
       } catch (err) {

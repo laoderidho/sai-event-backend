@@ -7,8 +7,12 @@ const app = new Hono()
 
 app.use("/api/*", cors({
   origin: corsEnable,
-  credentials: true
+  credentials: true,
+  allowHeaders: ['Content-Type', 'Authorization'],
+  exposeHeaders: ['Set-Cookie']
 }))
+
+console.log("CORS enabled for:", corsEnable)
 
 app.route('/api', routes)
 

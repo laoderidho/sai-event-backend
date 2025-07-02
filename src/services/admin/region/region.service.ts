@@ -5,13 +5,19 @@ import { Context } from "hono";
 import { verify } from "hono/jwt";
 import { secretAccessToken } from "../../../config/jwtSecret.config";
 import { statusLogcreateId, statusLogdeleteId, statusLogupdateId } from "../../../config/general.config";
+import { getCookie } from "hono/cookie";
 
 export default class RegionService {
 
     async Add(body: Iregion, c: Context){
         try {
             const {name} = body
-            const token = c.req.header('Authorization')
+            let token = getCookie(c, 'accessToken')
+
+            if(!token){
+                token = c.get('newAccessToken')
+             }
+
             const dataToken = await verify(token ?? '', secretAccessToken ?? '')
 
             const {email} = dataToken
@@ -87,7 +93,11 @@ export default class RegionService {
         try {
 
             const {name} = body
-            const token = c.req.header('Authorization')
+            let token = getCookie(c, 'accessToken')
+
+            if(!token){
+                token = c.get('newAccessToken')
+             }
             const dataToken = await verify(token ?? '', secretAccessToken ?? '')
             const {email} = dataToken
             
@@ -137,7 +147,12 @@ export default class RegionService {
 
     async delete(id: number, c: Context){
         try {
-            const token = c.req.header('Authorization')
+            let token = getCookie(c, 'accessToken')
+
+            if(!token){
+                token = c.get('newAccessToken')
+             }
+             
             const dataToken = await verify(token ?? '', secretAccessToken ?? '')
             const {email} = dataToken
 
