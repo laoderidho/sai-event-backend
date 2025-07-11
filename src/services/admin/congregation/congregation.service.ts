@@ -6,7 +6,7 @@ import { verify } from "hono/jwt";
 import { secretAccessToken } from "../../../config/jwtSecret.config";
 import { statusLogcreateId, statusLogdeleteId, statusLogupdateId } from "../../../config/general.config";
 import { getDatCongregation } from "../../../query/Admin/Conggregation/conggregation.query";
-
+import { getCookie } from "hono/cookie";
 
 export default class ConggregationService {
 
@@ -17,7 +17,12 @@ export default class ConggregationService {
             const {region_id, name}= body
 
             // token
-            const token = await c.req.header('Authorization')
+            let token = getCookie(c, 'accessToken')
+          
+            if(!token){
+                token = c.get('newAccessToken')
+            }
+          
             const dataToken = await verify(token ?? '', secretAccessToken ?? '')
             const {email} = dataToken
 
@@ -128,7 +133,13 @@ export default class ConggregationService {
 
         try {
             // token
-            const token = c.req.header('Authorization')
+           // token
+           let token = getCookie(c, 'accessToken')
+          
+           if(!token){
+               token = c.get('newAccessToken')
+           }
+
             const dataToken = await verify(token ?? '', secretAccessToken ?? '')
             const {email} = dataToken
 
@@ -183,8 +194,12 @@ export default class ConggregationService {
 
     async delete(id: number, c: Context){
         try {
-             // token
-            const token = c.req.header('Authorization')
+           // token
+           let token = getCookie(c, 'accessToken')
+          
+           if(!token){
+               token = c.get('newAccessToken')
+           }
             const dataToken = await verify(token ?? '', secretAccessToken ?? '')
             const {email} = dataToken
 

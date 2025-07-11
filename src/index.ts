@@ -12,8 +12,6 @@ app.use("/api/*", cors({
   exposeHeaders: ['Set-Cookie']
 }))
 
-console.log("CORS enabled for:", corsEnable)
-
 app.route('/api', routes)
 
 export default app
