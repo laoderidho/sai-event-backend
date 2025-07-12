@@ -31,7 +31,7 @@ export const setAccessToken = async (c: Context, token: string): Promise<Iaccess
             id: id
         }
     })
-
+    
     if(!user){
         return {
             status: 0
@@ -40,8 +40,8 @@ export const setAccessToken = async (c: Context, token: string): Promise<Iaccess
 
     const payload = {
         sub: user.id,
-        role: data.roleId,
-        email: data.email,
+        role: user.roleId,
+        email: user.email,
         exp: Math.floor(Date.now() / 1000) + 60 * 180
     }
 

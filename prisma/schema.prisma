@@ -27,6 +27,7 @@ model User {
   name      String
   password  String 
   no_telp   String
+  profile_image Bytes?
   user_congregation user_congregation[]
 
   role      Role  @relation(fields: [roleId], references: [id])

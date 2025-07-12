@@ -21,7 +21,6 @@ export default class RegionService {
             const dataToken = await verify(token ?? '', secretAccessToken ?? '')
 
             const {email} = dataToken
-            
 
             const dbTrans = await prisma.$transaction(async prisma=>{
                 const data = await prisma.region.create({
@@ -44,7 +43,7 @@ export default class RegionService {
                 }
             })
 
-            return dbTrans
+            return ''
             
         } catch (error) {
             throw error
