@@ -158,7 +158,8 @@ class AuthServices{
                 status: "success",
                 message: "Berhasil Login",
                 role: data.roleId,
-                name: data.name
+                name: data.name,
+                id: data.id
             }
 
         } catch (error) {

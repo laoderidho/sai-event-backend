@@ -4,7 +4,9 @@ import { getCookie } from "hono/cookie";
 import { verify } from "hono/jwt";
 import { secretAccessToken } from "../../config/jwtSecret.config";
 import { prisma } from "../../utils/prisma";
-import sharp = require("sharp");
+import { getDataProfile } from "../../query/Profile/profile.query";
+import { hostLink } from "../../../test/config";
+
 
 class ProfileServices {
 
@@ -18,7 +20,6 @@ class ProfileServices {
             if(!token){
                 token = c.get('newAccessToken')
             }
-            
             const dataToken = await verify(token ?? '', secretAccessToken ?? '')
             const {sub} = dataToken
             
@@ -62,6 +63,25 @@ class ProfileServices {
         }
     }
 
+    async getProfile(c: Context){
+        const {id} = c.req.param()
+
+        try {
+            
+            const data = await prisma.$queryRawUnsafe(getDataProfile(Number(id), hostLink))
+            
+            if(!data){
+                throw new HTTPException(404, {message: "Profile Tidak Ada"})
+            }
+            
+            return {
+                data
+            }
+        } catch (error) {
+            throw error
+        }
+        
+    }
 }
 
 export default ProfileServices
